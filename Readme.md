@@ -67,3 +67,19 @@ Kali ini kita menambahkan modul `thread` dan `time::Duration` sebelum melakukan 
 Kita telah mengganti `if` dengan `match`. Hal ini dilakukan karena saat ini kita memiliki lebih dari 2 kondisional. `match` akan mencocokkan isi dari `request_line`
 
 Ketika kita membuka `http://127.0.0.1:7878/sleep` maka akan dijalankan `thread::sleep(Duration::from_secs(10));` dimana program akan berhenti selama 10 detik karena dalam keadaan sleep.
+
+### Commit 5 Reflection notes
+
+Thread pool adalah kumpulan thread yang sudah siap untuk melakukan tugasnya. Karena kita ingin membuat multithreaded server, maka dibuatlah threadpool ini dengan code `let pool = ThreadPool::new(4);` 
+
+```
+ for stream in listener.incoming() {
+        let stream = stream.unwrap();
+
+        pool.execute(|| {
+            handle_connection(stream);
+        });
+    }
+```
+
+Kemudian, akan dilakukan sebuah looping untuk setiap koneksi yang masuk dan akan di unwrap lalu threadPool akan menangani dan menjalankan beberapa task tersebut secara bersamaan
