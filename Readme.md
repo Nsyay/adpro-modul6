@@ -30,3 +30,15 @@ kemudian `let status_line = "HTTP/1.1 200 OK";` adalah menginisiasi respons HTTP
 `let contents = fs::read_to_string("hello.html").unwrap();` line ini akan membaca file html hello dan dimasukkan ke contents. dibuat juga variabel length `let length = contents.len();` yang menyimpan panjang contents. Setelah itu digabungkan menjadi satu response html pada variabel response `let response = format!("{status_line}\r\nContent-Length:{length}\r\n\r\n{contents}");`.
 
 Terakhir, `stream.write_all(response.as_bytes()).unwrap();` line ini mengirimkan kembali respons yang telah diubah menjadi urutan byte.
+
+### Commit 3 Reflection notes
+![Commit 3 screen capture](/assets/images/bad_rust.png)
+
+Perubahan pada method handle_connection kali ini yaitu bagaimana caranya agar web server yang kita buka dapat me-return page error apabila tidak ditemukan page yang sesuai.
+
+Pertama, code ini akan mengecek apakah `request_line` berisi GET request. apabila iya, maka akan masuk ke kondisi satu, dimana HTML file ditemukan, sesuai dan akan me-return contents dari file HTML tersebut. 
+Pada kasus ini, ketika kode status adalah 200, maka akan dibaca file HTML hello dan dikembalikan ke client.
+
+Kemudian, apabila `request_line` tidak berisi GET request, maka akan masuk ke kondisi else, dimana kita akan menginisiasi `let status_line = "HTTP/1.1 404 NOT FOUND";` dan membaca file HTML 404 dengan code `let contents = fs::read_to_string("404.html").unwrap();`. Hal ini sama dengan cara membaca dan me-return file HTML hello sebelumnya
+
+Dengan ditambahkannya conditional ini, apabila client membuka halaman yang tidak valid atau tidak tersedia, maka akan dialihkan ke halaman error HTML melalui `404.html`
