@@ -1,4 +1,4 @@
-# Commit 1 Reflection notes
+### Commit 1 Reflection notes
 
 Secara umum, handle_connection method adalah method yang membaca HTTP request dan me-return output berupa keterangan dan informasi HTTP request yang dibaca.
 ```
@@ -18,3 +18,15 @@ let http_request: Vec<_> = buf_reader
 println!("Request: {:#?}", http_request);
 ```
 Terakhir, code ini digunakan untuk mengembalikan output `http_request` dengan `{:#?}` untuk menambah indentasi agar lebih rapih dan mudah dibaca.
+
+
+### Commit 2 Reflection notes
+![Commit 2 screen capture](/assets/images/hello_rust.png)
+
+Perubahan pada method handle_connection kali ini yaitu bagaimana caranya agar web server yang kita buka me-return file HTML.
+
+pertama, kita menambahkan modul `fs` yang berfungsi untuk menyediakan fungsi pada Rust dalam berinteraksi dengan suatu file.
+kemudian `let status_line = "HTTP/1.1 200 OK";` adalah menginisiasi respons HTTP dengan kode status 200 yaitu menyatakan bahwa respons berhasil.
+`let contents = fs::read_to_string("hello.html").unwrap();` line ini akan membaca file html hello dan dimasukkan ke contents. dibuat juga variabel length `let length = contents.len();` yang menyimpan panjang contents. Setelah itu digabungkan menjadi satu response html pada variabel response `let response = format!("{status_line}\r\nContent-Length:{length}\r\n\r\n{contents}");`.
+
+Terakhir, `stream.write_all(response.as_bytes()).unwrap();` line ini mengirimkan kembali respons yang telah diubah menjadi urutan byte.
