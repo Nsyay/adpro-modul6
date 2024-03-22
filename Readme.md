@@ -42,3 +42,6 @@ Pada kasus ini, ketika kode status adalah 200, maka akan dibaca file HTML hello 
 Kemudian, apabila `request_line` tidak berisi GET request, maka akan masuk ke kondisi else, dimana kita akan menginisiasi `let status_line = "HTTP/1.1 404 NOT FOUND";` dan membaca file HTML 404 dengan code `let contents = fs::read_to_string("404.html").unwrap();`. Hal ini sama dengan cara membaca dan me-return file HTML hello sebelumnya
 
 Dengan ditambahkannya conditional ini, apabila client membuka halaman yang tidak valid atau tidak tersedia, maka akan dialihkan ke halaman error HTML melalui `404.html`
+
+Jika diperhatikan, pada code yang sudah saya terapkan, terdapat duplikasi code. Oleh karena itu saya akan melakukan refactor untuk menghilangkan duplikasi tersebut
+![Refactor Commit 3 screen capture](/assets/images/refactor_commit3.png)
