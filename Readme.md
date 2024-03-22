@@ -45,3 +45,25 @@ Dengan ditambahkannya conditional ini, apabila client membuka halaman yang tidak
 
 Jika diperhatikan, pada code yang sudah saya terapkan, terdapat duplikasi code. Oleh karena itu saya akan melakukan refactor untuk menghilangkan duplikasi tersebut
 ![Refactor Commit 3 screen capture](/assets/images/refactor_commit3.png)
+
+### Commit 4 Reflection notes
+
+```
+let (status_line, filename) = match &request_line[..] {
+    "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
+    "GET /sleep HTTP/1.1" => {
+        thread::sleep(Duration::from_secs(10));
+        ("HTTP/1.1 200 OK", "hello.html")
+    }
+    _ => ("HTTP/1.1 404 NOT FOUND", "404.html"),
+};
+
+let contents = fs::read_to_string(filename).unwrap();
+let length = contents.len();
+```
+
+Kali ini kita menambahkan modul `thread` dan `time::Duration` sebelum melakukan modifikasi pada method handle_connection.
+
+Kita telah mengganti `if` dengan `match`. Hal ini dilakukan karena saat ini kita memiliki lebih dari 2 kondisional. `match` akan mencocokkan isi dari `request_line`
+
+Ketika kita membuka `http://127.0.0.1:7878/sleep` maka akan dijalankan `thread::sleep(Duration::from_secs(10));` dimana program akan berhenti selama 10 detik karena dalam keadaan sleep.
