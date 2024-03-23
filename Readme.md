@@ -72,6 +72,30 @@ Ketika kita membuka `http://127.0.0.1:7878/sleep` maka akan dijalankan `thread::
 
 Thread pool adalah kumpulan thread yang sudah siap untuk melakukan tugasnya. Karena kita ingin membuat multithreaded server, maka dibuatlah threadpool ini dengan code `let pool = ThreadPool::new(4);` 
 
+Pada lib.rs `let (sender, receiver) = mpsc::channel();` akan membuat channel sebagai media komunikasi antar main thread dengan worker thread.
+
+```
+struct Worker {
+    id: usize,
+    thread: thread::JoinHandle<()>,
+}
+
+impl Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+        let thread = thread::spawn(move || loop {
+            let job = receiver.lock().unwrap().recv().unwrap();
+
+            println!("Worker {id} got a job; executing.");
+
+            job();
+        });
+
+        Worker { id, thread }
+    }
+}
+```
+`workers.push(Worker::new(id, Arc::clone(&receiver)));` pada code ini juga dinisiasi worker 
+
 ```
  for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -82,4 +106,4 @@ Thread pool adalah kumpulan thread yang sudah siap untuk melakukan tugasnya. Kar
     }
 ```
 
-Kemudian, akan dilakukan sebuah looping untuk setiap koneksi yang masuk dan akan di unwrap lalu threadPool akan menangani dan menjalankan beberapa task tersebut secara bersamaan
+Kemudian, pada main.rs akan dilakukan sebuah looping untuk setiap koneksi yang masuk dan akan di unwrap lalu threadPool akan menangani dan menjalankan beberapa task tersebut secara bersamaan
